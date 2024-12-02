@@ -19,11 +19,24 @@ class Helper {
             var listOfPairs = mutableListOf<Pair<String, String>>()
 
             val bufferedReader = File(realPath).bufferedReader()
-            val inputString = bufferedReader.forEachLine {
+            bufferedReader.forEachLine {
                 val split = it.split(" ")
                 listOfPairs.add(Pair(split.first(), split.last()))
             }
             return listOfPairs;
+        }
+
+        fun readAsLines(path: String): List<String> {
+            val x = File("").absolutePath
+            val realPath = x + "/src/" + path
+
+            var listOfString = mutableListOf<String>()
+
+            val bufferedReader = File(realPath).bufferedReader()
+            bufferedReader.forEachLine {
+                listOfString.add(it)
+            }
+            return listOfString;
         }
     }
 }
