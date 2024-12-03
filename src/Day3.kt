@@ -7,24 +7,16 @@ class Day3(isTest: Boolean) : Day(isTest) {
             val chars = it.toCharArray()
             // Build up stack
             chars.forEach { c ->
-                if (c.equals('m') && stack.isEmpty()) {
-                    stack.addLast(c)
-                } else if (stack.isNotEmpty()) {
-                    if (c.equals('u') && stack.last().equals('m')) {
-                        stack.addLast(c)
-                    } else if (c.equals('l') && stack.last().equals('u')) {
-                        stack.addLast(c)
-                    } else if (c.equals('(') && stack.last().equals('l')) {
-                        stack.addLast(c)
-                    } else if (c.isDigit() && stack.last().equals('(')) {
-                        stack.addLast(c)
-                    } else if (c.isDigit() && stack.last().isDigit()) {
-                        stack.addLast(c)
-                    } else if (c.equals(',') && stack.last().isDigit()) {
-                        stack.addLast(c)
-                    } else if (c.isDigit() && stack.last().equals(',')) {
-                        stack.addLast(c)
-                    } else if (c.equals(')') && stack.last().isDigit()) {
+                if (c.equals('m') && stack.isEmpty()) stack.addLast(c)
+                else if (stack.isNotEmpty()) {
+                    if (c.equals('u') && stack.last().equals('m')) stack.addLast(c)
+                    else if (c.equals('l') && stack.last().equals('u')) stack.addLast(c)
+                    else if (c.equals('(') && stack.last().equals('l')) stack.addLast(c)
+                    else if (c.isDigit() && stack.last().equals('(')) stack.addLast(c)
+                    else if (c.isDigit() && stack.last().isDigit()) stack.addLast(c)
+                    else if (c.equals(',') && stack.last().isDigit()) stack.addLast(c)
+                    else if (c.isDigit() && stack.last().equals(',')) stack.addLast(c)
+                    else if (c.equals(')') && stack.last().isDigit()) {
                         stack.addLast(c)
                         // retrieve and clean up
                         val operationStack = stack.joinToString("")
@@ -34,9 +26,7 @@ class Day3(isTest: Boolean) : Day(isTest) {
                         val res = a * b
                         total += res
                         stack = ArrayDeque<Char>(emptyList())
-                    } else {
-                        stack = ArrayDeque<Char>(emptyList())
-                    }
+                    } else stack = ArrayDeque<Char>(emptyList())
                 }
             }
         }
@@ -52,12 +42,9 @@ class Day3(isTest: Boolean) : Day(isTest) {
             val chars = it.toCharArray()
             // Build up stack - this time looking for do and don't
             chars.forEach { c ->
-                if (c.equals('m') && stack.isEmpty()) {
-                    stack.addLast(c)
-                }
-                else if (c.equals('d') && stack.isEmpty()) {
-                    stack.addLast(c)
-                } else if (stack.isNotEmpty()) {
+                if (c.equals('m') && stack.isEmpty()) stack.addLast(c)
+                else if (c.equals('d') && stack.isEmpty()) stack.addLast(c)
+                else if (stack.isNotEmpty()) {
                     // DO
                     if (c.equals('o') && stack.last().equals('d')) stack.addLast(c)
                     else if (c.equals('(') && stack.last().equals('o')) stack.addLast(c)
@@ -76,21 +63,14 @@ class Day3(isTest: Boolean) : Day(isTest) {
                     }
 
                     // MUL
-                    else if (c.equals('u') && stack.last().equals('m')) {
-                        stack.addLast(c)
-                    } else if (c.equals('l') && stack.last().equals('u')) {
-                        stack.addLast(c)
-                    } else if (c.equals('(') && stack.last().equals('l')) {
-                        stack.addLast(c)
-                    } else if (c.isDigit() && stack.last().equals('(')) {
-                        stack.addLast(c)
-                    } else if (c.isDigit() && stack.last().isDigit()) {
-                        stack.addLast(c)
-                    } else if (c.equals(',') && stack.last().isDigit()) {
-                        stack.addLast(c)
-                    } else if (c.isDigit() && stack.last().equals(',')) {
-                        stack.addLast(c)
-                    } else if (c.equals(')') && stack.last().isDigit()) {
+                    else if (c.equals('u') && stack.last().equals('m')) stack.addLast(c)
+                    else if (c.equals('l') && stack.last().equals('u')) stack.addLast(c)
+                    else if (c.equals('(') && stack.last().equals('l')) stack.addLast(c)
+                    else if (c.isDigit() && stack.last().equals('(')) stack.addLast(c)
+                    else if (c.isDigit() && stack.last().isDigit()) stack.addLast(c)
+                    else if (c.equals(',') && stack.last().isDigit()) stack.addLast(c)
+                    else if (c.isDigit() && stack.last().equals(',')) stack.addLast(c)
+                    else if (c.equals(')') && stack.last().isDigit()) {
                         stack.addLast(c)
                         // retrieve and clean up
                         val operationStack = stack.joinToString("")
@@ -100,9 +80,7 @@ class Day3(isTest: Boolean) : Day(isTest) {
                         val res = a * b
                         if (doit) total += res
                         stack = ArrayDeque<Char>(emptyList())
-                    } else {
-                        stack = ArrayDeque<Char>(emptyList())
-                    }
+                    } else stack = ArrayDeque<Char>(emptyList())
                 }
             }
         }
