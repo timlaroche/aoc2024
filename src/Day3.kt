@@ -5,37 +5,27 @@ class Day3(isTest: Boolean) : Day(isTest) {
         var stack = ArrayDeque<Char>(emptyList())
         lines.forEach {
             val chars = it.toCharArray()
-            var count = 0
             // Build up stack
             chars.forEach { c ->
                 if (c.equals('m') && stack.isEmpty()) {
                     stack.addLast(c)
-                    count++
                 } else if (stack.isNotEmpty()) {
                     if (c.equals('u') && stack.last().equals('m')) {
                         stack.addLast(c)
-                        count++
                     } else if (c.equals('l') && stack.last().equals('u')) {
                         stack.addLast(c)
-                        count++
                     } else if (c.equals('(') && stack.last().equals('l')) {
                         stack.addLast(c)
-                        count++
                     } else if (c.isDigit() && stack.last().equals('(')) {
                         stack.addLast(c)
-                        count++
                     } else if (c.isDigit() && stack.last().isDigit()) {
                         stack.addLast(c)
-                        count++
                     } else if (c.equals(',') && stack.last().isDigit()) {
                         stack.addLast(c)
-                        count++
                     } else if (c.isDigit() && stack.last().equals(',')) {
                         stack.addLast(c)
-                        count++
                     } else if (c.equals(')') && stack.last().isDigit()) {
                         stack.addLast(c)
-                        count++
                         // retrieve and clean up
                         val operationStack = stack.joinToString("")
                         val operation = stack.joinToString("").split(",")
@@ -60,16 +50,13 @@ class Day3(isTest: Boolean) : Day(isTest) {
         var doit = true
         lines.forEach {
             val chars = it.toCharArray()
-            var count = 0 // don't think I need this but just in case
             // Build up stack - this time looking for do and don't
             chars.forEach { c ->
                 if (c.equals('m') && stack.isEmpty()) {
                     stack.addLast(c)
-                    count++
                 }
                 else if (c.equals('d') && stack.isEmpty()) {
                     stack.addLast(c)
-                    count++
                 } else if (stack.isNotEmpty()) {
                     // DO
                     if (c.equals('o') && stack.last().equals('d')) stack.addLast(c)
@@ -91,28 +78,20 @@ class Day3(isTest: Boolean) : Day(isTest) {
                     // MUL
                     else if (c.equals('u') && stack.last().equals('m')) {
                         stack.addLast(c)
-                        count++
                     } else if (c.equals('l') && stack.last().equals('u')) {
                         stack.addLast(c)
-                        count++
                     } else if (c.equals('(') && stack.last().equals('l')) {
                         stack.addLast(c)
-                        count++
                     } else if (c.isDigit() && stack.last().equals('(')) {
                         stack.addLast(c)
-                        count++
                     } else if (c.isDigit() && stack.last().isDigit()) {
                         stack.addLast(c)
-                        count++
                     } else if (c.equals(',') && stack.last().isDigit()) {
                         stack.addLast(c)
-                        count++
                     } else if (c.isDigit() && stack.last().equals(',')) {
                         stack.addLast(c)
-                        count++
                     } else if (c.equals(')') && stack.last().isDigit()) {
                         stack.addLast(c)
-                        count++
                         // retrieve and clean up
                         val operationStack = stack.joinToString("")
                         val operation = stack.joinToString("").split(",")
