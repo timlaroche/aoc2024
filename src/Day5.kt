@@ -38,7 +38,6 @@ class Day5(isTest: Boolean) : Day(isTest) {
             val splitRule = rule.split("|")
             Pair(splitRule[0].toLong(), splitRule[1].toLong())
         }
-        val badRules = rulePairs.map { Pair(it.second, it.first) }
 
         // Pages
         val badPages = mutableListOf<List<Pair<Long, Long>>>()
