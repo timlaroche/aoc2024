@@ -1,11 +1,11 @@
 import java.io.File
 
-class Helper {
+class Helper2025 {
     companion object {
         fun readString(path: String): String {
             // TODO wtf fix this hack
             val x = File("").absolutePath
-            val realPath = x + "/src/" + path
+            val realPath = x + "/aoc2025/src/" + path
 
             val bufferedReader = File(realPath).bufferedReader()
             val inputString = bufferedReader.use { it.readText() }
@@ -14,7 +14,7 @@ class Helper {
 
         fun readAsPairs(path: String): List<Pair<String, String>> {
             val x = File("").absolutePath
-            val realPath = x + "/src/" + path
+            val realPath = x + "/aoc2025/src/" + path
 
             var listOfPairs = mutableListOf<Pair<String, String>>()
 
@@ -28,7 +28,7 @@ class Helper {
 
         fun readAsLines(path: String): List<String> {
             val x = File("").absolutePath
-            val realPath = x + "/src/" + path
+            val realPath = x + "/aoc2025/src/" + path
 
             var listOfString = mutableListOf<String>()
 

@@ -2,11 +2,11 @@ class Day9(isTest: Boolean) : Day(isTest) {
 //    fun part1(): Long {
 //        // Hashmap for id to block location
 //        var isFile = true
-//        val fileSize = Helper.readAsLines(inputFile).get(0).length
+//        val fileSize = .Helper.readAsLines(inputFile).get(0).length
 //        var fileId = 0
 //        var blockId = 0
 //        val fileMap = mutableMapOf<Int, MutableList<Int>>()
-//        Helper.readAsLines(inputFile).get(0).forEach {
+//        .Helper.readAsLines(inputFile).get(0).forEach {
 //            val size = it.toString().toInt()
 //            val blockIds = mutableListOf<Int>()
 //            if (isFile) {

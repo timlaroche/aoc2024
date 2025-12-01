@@ -1,5 +1,3 @@
-import kotlin.math.abs
-
 class Day8(isTest: Boolean) : Day(isTest) {
     // 321 too high
     fun part1(): Long {

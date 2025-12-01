@@ -1,5 +1,5 @@
 fun main() {
-    val day = Day14(false)
+    val day = Day1(false)
     println(day.part1())
     println(day.part2())
 }

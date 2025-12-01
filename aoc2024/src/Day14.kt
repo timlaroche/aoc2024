@@ -1,6 +1,3 @@
-import kotlin.math.abs
-import kotlin.math.min
-
 class Day14(isTest: Boolean) : Day(isTest) {
 
     data class Robot(val pos: Pair<Int, Int>, val vel: Pair<Int, Int>)
