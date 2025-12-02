@@ -1,3 +1,7 @@
+package day2
+
+import Day
+
 class Day2(isTest: Boolean) : Day(isTest) {
     fun part1(): Long {
         val input = Helper2025.readString(inputFile)

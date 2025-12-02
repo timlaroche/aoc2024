@@ -1,3 +1,7 @@
+package day1
+
+import Day
+
 // 6272 too high
 // 5715 too low
 class Day1(isTest: Boolean) : Day(isTest) {

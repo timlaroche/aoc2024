@@ -2,10 +2,11 @@ import java.io.File
 
 class Helper2025 {
     companion object {
+        private val inputSrc = "/aoc2025/inputs/"
         fun readString(path: String): String {
             // TODO wtf fix this hack
             val x = File("").absolutePath
-            val realPath = x + "/aoc2025/src/" + path
+            val realPath = x + inputSrc + path
 
             val bufferedReader = File(realPath).bufferedReader()
             val inputString = bufferedReader.use { it.readText() }
