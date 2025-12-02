@@ -1,3 +1,5 @@
+// 6272 too high
+// 5715 too low
 class Day1(isTest: Boolean) : Day(isTest) {
     data class Direction(val clockwise: Boolean, val degrees: Int)
 
