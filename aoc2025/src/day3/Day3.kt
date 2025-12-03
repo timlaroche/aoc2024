@@ -37,6 +37,7 @@ class Day3(isTest: Boolean) : Day(isTest) {
             var digits = digitString.chunked(1).map { it -> it.toInt() }.toMutableList()
             for (i in wantedDigits - 1 downTo  0) {
                 // Pick the highest number that's 11 digits away
+                // If we only have 11 digits left we need to take all of them!
                 if (digits.size == i) {
                     digits.forEach { sb.append(it) }
                     break;
