@@ -3,21 +3,25 @@ package day3
 import Day
 
 class Day3(isTest: Boolean) : Day(isTest) {
+    val founds = hashMapOf<String, Long>()
+    val foundspt2 = hashMapOf<String, Long>()
+
     fun part1() {
         val input = Helper2025.readAsLines(inputFile)
         var res = 0L
         input.forEach { it ->
-            var highestFound = 0
+            var highestFound = 0L
             val digits = it.chunked(1).map { it -> it.toInt() }
 
             // If I turn on this digit, what's the highest number I can make with the remaining digits
             digits.forEachIndexed { index, digit ->
                 val subList = digits.subList(index + 1, digits.size)
                 subList.forEach { it ->
-                    val possible = "$digit$it".toInt()
+                    val possible = "$digit$it".toLong()
                     if (possible > highestFound) highestFound = possible
                 }
             }
+            founds.put(it, highestFound)
             res += highestFound
         }
         println(res)
@@ -27,25 +31,25 @@ class Day3(isTest: Boolean) : Day(isTest) {
     fun part2() {
         val input = Helper2025.readAsLines(inputFile)
         var res = 0L
-        val wantedDigits = 2
+        val wantedDigits = 12
         input.forEach { digitString ->
-            // Go from right to left, need to keep at least 12 digits left
-            // Pick the highest number that's 11 digits away
             val sb = StringBuilder()
             var digits = digitString.chunked(1).map { it -> it.toInt() }.toMutableList()
             for (i in wantedDigits - 1 downTo  0) {
-
-
-
-                val valid = digits.dropLast(i)
+                // Pick the highest number that's 11 digits away
+                if (digits.size == i) {
+                    digits.forEach { sb.append(it) }
+                    break;
+                }
+                var valid = digits.dropLast(i)
                 val max = valid.max()
                 sb.append(max)
                 // cleanup list
-                val indexReached = digits.indexOf(max)
+                var indexReached = digits.indexOf(max)
                 val cleanedList = digits.subList(indexReached + 1, digits.size)
-                cleanedList.remove(max)
                 digits = cleanedList
             }
+            foundspt2.put(digitString, sb.toString().toLong())
             res += sb.toString().toLong()
         }
         println(res)
