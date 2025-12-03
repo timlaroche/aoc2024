@@ -15,7 +15,7 @@ class Helper2025 {
 
         fun readAsPairs(path: String): List<Pair<String, String>> {
             val x = File("").absolutePath
-            val realPath = x + "/aoc2025/src/" + path
+            val realPath = x + inputSrc + path
 
             var listOfPairs = mutableListOf<Pair<String, String>>()
 
@@ -29,7 +29,7 @@ class Helper2025 {
 
         fun readAsLines(path: String): List<String> {
             val x = File("").absolutePath
-            val realPath = x + "/aoc2025/src/" + path
+            val realPath = x + inputSrc + path
 
             var listOfString = mutableListOf<String>()
 
