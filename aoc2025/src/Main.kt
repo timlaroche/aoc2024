@@ -1,8 +1,8 @@
 import day3.Day3
 
 fun main() {
-    val day = Day3(false)
-    val day_test = Day3(true)
+    val day = Day4(false)
+    val day_test = Day4(true)
 
     println("======test_input======")
     println(day_test.part1())
