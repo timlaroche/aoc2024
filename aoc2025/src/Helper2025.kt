@@ -39,5 +39,22 @@ class Helper2025 {
             }
             return listOfString;
         }
+
+        fun readAsCharGrid(path: String): MutableList<MutableList<Char>> {
+            val x = File("").absolutePath
+            val realPath = x + inputSrc + path
+
+            val grid = mutableListOf(mutableListOf<Char>()).toMutableList()
+            val bufferedReader = File(realPath).bufferedReader()
+            grid.removeFirst() // hack wtf
+            bufferedReader.forEachLine {
+                grid.add(
+                    it.toCharArray().map {
+                        it
+                    }.toMutableList()
+                )
+            }
+            return grid
+        }
     }
 }
