@@ -42,31 +42,35 @@ class Day5(isTest: Boolean) : Day(isTest) {
     }
 
     // 360334099692323 -- too high
+    // 352681648086146  -- YES
+    // 352681648086160 - incorrect
+    // 325062818129913 - incorrect
     // 342492218176632 - incorrect
     fun part2() {
         val input = Helper2025.readAsLines(inputFile)
         val parsedInput = parseInput(input)
-        var ranges = parsedInput.first
-    }
-}
 
-fun mergeRange(range: LongRange, incoming: LongRange): LongRange? {
-    if (range == incoming) return null
-    else if (incoming.first == incoming.endInclusive && (range.first == incoming.first || range.endInclusive >= incoming.first)) {
-        return LongRange(range.first, range.last)
-    }
-    // 1 self contaiend
-    else if (incoming.first >= range.first && incoming.endInclusive < range.endInclusive) {
-        return LongRange(range.first, range.endInclusive)
-    }
-    // 2 contained extending past
-    else if (incoming.first > range.first && range.endInclusive > incoming.first && incoming.endInclusive > range.endInclusive) {
-        return LongRange(range.first, incoming.endInclusive)
-    }
-    // 3 contaiend extending before
-    else if (incoming.first < range.first && range.first < incoming.endInclusive && incoming.endInclusive > range.first) {
-        return LongRange(incoming.first, range.endInclusive)
-    } else {
-        return null
+        val sortedRanges = parsedInput.first.sortedBy { it.first }
+        val res = mutableListOf<LongRange>()
+        val finalRange = sortedRanges.reduce { sum, elem ->
+            if (elem.first <= sum.endInclusive) {
+                LongRange(
+                    sum.first,
+                    Math.max(elem.endInclusive, sum.endInclusive)
+                )
+            } else {
+                res.add(sum)
+                elem
+            }
+        }
+
+        if (finalRange.first != finalRange.last) {
+            res.add(finalRange)
+        }
+        var finalAnswer = 0L
+        res.forEach { it ->
+            finalAnswer += (it.endInclusive - it.first) + 1
+        }
+        println(finalAnswer)
     }
 }

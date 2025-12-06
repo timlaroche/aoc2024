@@ -56,5 +56,18 @@ class Helper2025 {
             }
             return grid
         }
+
+        fun readAsStringGridIgnoringWhiteSpace(path: String): MutableList<MutableList<String>> {
+            val x = File("").absolutePath
+            val realPath = x + inputSrc + path
+
+            val grid = mutableListOf(mutableListOf<String>()).toMutableList()
+            val bufferedReader = File(realPath).bufferedReader()
+            grid.removeFirst() // hack wtf
+            bufferedReader.forEachLine {
+                grid.add(it.split(" ").filter { !it.isEmpty() }.toMutableList())
+            }
+            return grid
+        }
     }
 }
