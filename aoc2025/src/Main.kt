@@ -1,4 +1,5 @@
 import day6.Day6
+import day8.Day8
 
 fun main() {
     val day = Day6(false)

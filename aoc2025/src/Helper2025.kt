@@ -69,5 +69,31 @@ class Helper2025 {
             }
             return grid
         }
+
+        fun readAsGridForDay6_2025(path: String): MutableList<MutableList<String>> {
+            val x = File("").absolutePath
+            val realPath = x + inputSrc + path
+
+            val grid = mutableListOf(mutableListOf<String>()).toMutableList()
+            val bufferedReader = File(realPath).bufferedReader()
+            grid.removeFirst() // hack wtf
+            bufferedReader.forEachLine {
+                // hack
+                if (it.contains("*") || it.contains("+")) {
+                    grid.add(
+                        it.split(" ").filter { !it.isEmpty() }.toMutableList()
+                    )
+                } else {
+                    val longestDigits = it.split(" ").maxOf { it.length }
+                    grid.add(
+                        it.windowed(longestDigits, longestDigits + 1, true)
+                            .map { it.trimEnd() }
+                            .map { it.replace(Char(32), '0') }
+                            .toMutableList()
+                    )
+                }
+            }
+            return grid
+        }
     }
 }
