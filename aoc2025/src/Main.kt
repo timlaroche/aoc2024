@@ -7,7 +7,7 @@ fun main() {
     val day_test = Day9(true)
 //    println("======test_input======")
 //    println(day_test.part1())
-//    println(day_test.part2_map())
+    println(day_test.part2_map())
 //    println(day_test.part2())
     println("======real_input======")
 //    println(day.part1())

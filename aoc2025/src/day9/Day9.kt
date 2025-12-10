@@ -128,38 +128,32 @@ class Day9(isTest: Boolean) : Day(isTest) {
         points.forEach { p -> grid[Point2(p.column, p.row)] = true }
 
         // Scan horizontally
-        for (i in 0..boundsRow) {
-            for (j in 0..boundsColumn) {
-                val p = Point2(i, j)
-                // If the grid has this point, then we are on a corner
-                if (grid.contains(p)) {
-                    val sameRow = grid.keys.filter { it.row == p.row }.sortedBy { it.column }
-                    val pairs = sameRow.zipWithNext()
-                    pairs.forEach { pair ->
-                        for (k in pair.first.column..pair.second.column) {
-                            grid[Point2(p.row, k)] = true
-                        }
-                    }
+        val fillHorizontal = grid.keys.mapIndexed { i, p ->
+            val sameRow = grid.keys.filter { it.row == p.row }.sortedBy { it.column }
+            val pairs = sameRow.zipWithNext()
+            val res = mutableListOf<Point2>()
+            pairs.forEach { pair ->
+                for (k in pair.first.column..pair.second.column) {
+                    res.add(Point2(p.row, k))
                 }
             }
+            res
         }
+        fillHorizontal.flatten().forEach { p -> grid[p] = true }
 
         // Scan vertically
-        for (j in 0..boundsColumn) {
-            for (i in 0..boundsRow) {
-                val p = Point2(i, j)
-                // If the grid has this point, then we are on a corner
-                if (grid.contains(p)) {
-                    val sameColumn = grid.keys.filter { it.column == p.column }.sortedBy { it.row }
-                    val pairs = sameColumn.zipWithNext()
-                    pairs.forEach { pair ->
-                        for (k in pair.first.row..pair.second.row) {
-                            grid[Point2(k, p.column)] = true
-                        }
-                    }
+        val fillVertical = grid.keys.mapIndexed { i, p ->
+            val sameColumn = grid.keys.filter { it.column == p.column }.sortedBy { it.row }
+            val pairs = sameColumn.zipWithNext()
+            val res = mutableListOf<Point2>()
+            pairs.forEach { pair ->
+                for (k in pair.first.row..pair.second.row) {
+                    res.add(Point2(k, p.column))
                 }
             }
+            res
         }
+        fillVertical.flatten().forEach { p -> grid[p] = true }
 
         // At this point grid is a mask of 1s
         // Create area masks for each pair of points
