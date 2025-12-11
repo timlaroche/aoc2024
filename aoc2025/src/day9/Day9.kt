@@ -1,9 +1,14 @@
 package day9
 
 import Day
+import java.io.File
 import kotlin.collections.mutableMapOf
 
 // pt2 378779816 too low
+// 433059134 too low
+// 4728026430 too high
+// 4602484064 not correct
+// 4781377701 wrong
 
 class Day9(isTest: Boolean) : Day(isTest) {
     data class Point(val x: Long, val y: Long)
@@ -37,88 +42,10 @@ class Day9(isTest: Boolean) : Day(isTest) {
         return dx * dy
     }
 
-    fun part2() {
-        // Work out green spots
-        val input = Helper2025.readAsLines(inputFile)
-        val points = input.map {
-            val split = it.split(",")
-            Point(split[0].toLong(), split[1].toLong())
-        }
-
-        val boundsRow = (points.maxOf { it.y } + 3).toInt()
-        val boundsColumn = (points.maxOf { it.x } + 3).toInt()
-
-        // Initialize grid
-        val grid = MutableList(boundsRow) { MutableList(boundsColumn) { false } }
-
-        // Parse the points into the grid
-        points.forEach { p -> grid[p.y.toInt()][p.x.toInt()] = true }
-        // Scan horizontally
-        for (i in 0..boundsRow - 1) {
-            val horizontalIndexes = grid.get(i).mapIndexed { idx, it -> if (it == true) idx else -1 }.filter { it != -1 }
-            val lines = horizontalIndexes.zipWithNext()
-            lines.forEach {
-                for (j in it.first..it.second) {
-                    grid[i][j] = true
-                }
-            }
-        }
-        // Scan vertically
-        for (j in 0..boundsColumn - 1) {
-            val verticalIndexes = mutableListOf<Int>()
-            for (i in 0..boundsRow - 1) {
-                if (grid[i][j] == true) {
-                    verticalIndexes.add(i)
-                }
-            }
-            val lines = verticalIndexes.zipWithNext()
-            lines.forEach {
-                for (i in it.first..it.second) {
-                    grid[i][j] = true
-                }
-            }
-        }
-        // At this point grid is a mask of 1s
-        println(grid.size)
-        // For each point, create a grid filling in 1s in the area
-        var biggest = 0
-        points.forEach { p1 ->
-            points.forEach { p2 ->
-                val areaMask = MutableList(boundsRow) { MutableList(boundsColumn) { false } }
-                val startingX = Math.min(p1.x, p2.x).toInt()
-                val startingY = Math.min(p1.y, p2.y).toInt()
-
-                val dx = Math.abs(p2.x - p1.x).toInt()
-                val dy = Math.abs(p2.y - p1.y).toInt()
-
-                for (i in startingX..startingX + dx) {
-                    for (j in startingY..startingY + dy) {
-                        areaMask[j][i] = true
-                    }
-                }
-
-//                println("======&&=====")
-                val valid = validMask(areaMask, grid)
-//                println(valid)
-//                printGridAndMask(grid, areaMask)
-//                println("=======")
-
-
-                val areaOfMask = areaMask.filter { it.contains(true) }.sumOf { it.count { it -> it == true } }
-                if (valid && areaOfMask > biggest) {
-//                    println("New biggest found: $areaOfMask")
-//                    println("Corners: $p1 to $p2")
-                    biggest = areaOfMask
-                }
-            }
-        }
-        println(biggest)
-    }
-
     data class Point2(val row: Int, val column: Int)
     data class Rectangle(val topLeft: Point2, val bottomRight: Point2, val area: Long)
 
-    fun part2_map() {
+    fun part2() {
         // Work out green spots
         val input = Helper2025.readAsLines(inputFile)
         val points = input.map {
@@ -135,31 +62,16 @@ class Day9(isTest: Boolean) : Day(isTest) {
         }
         areas.sortByDescending { it.area }
 
-        val boundsRow = points.maxOf { it.column } + 3
-        val boundsColumn = points.maxOf { it.row } + 3
-
         // Initialize grid
         val grid = mutableMapOf<Point2, Boolean>()
 
         // Parse the points into the grid
-        points.forEach { p -> grid[Point2(p.column, p.row)] = true }
+        points.forEach { p -> grid[Point2(p.row, p.column)] = true }
 
         // Scan horizontally
         val fillHorizontal = grid.keys.mapIndexed { i, p ->
-            val sameRow = grid.keys.filter { it.row == p.row }.sortedBy { it.column }
-            val pairs = sameRow.zipWithNext()
-            val res = mutableListOf<Point2>()
-            pairs.forEach { pair ->
-                for (k in pair.first.column..pair.second.column) {
-                    res.add(Point2(p.row, k))
-                }
-            }
-            res
-        }
-        // Scan vertically
-        val fillVertical = grid.keys.mapIndexed { i, p ->
-            val sameColumn = grid.keys.filter { it.column == p.column }.sortedBy { it.row }
-            val pairs = sameColumn.zipWithNext()
+            val sameRow = grid.keys.filter { it.column == p.column }.sortedBy { it.row }
+            val pairs = sameRow.chunked(2).map { Pair(it[0], it[1]) }
             val res = mutableListOf<Point2>()
             pairs.forEach { pair ->
                 for (k in pair.first.row..pair.second.row) {
@@ -167,20 +79,35 @@ class Day9(isTest: Boolean) : Day(isTest) {
                 }
             }
             res
-        }
+        }.flatten().toSet()
+
+        // Scan vertically
+        val fillVertical = grid.keys.mapIndexed { i, p ->
+            val sameColumn = grid.keys.filter { it.row == p.row }.sortedBy { it.column }
+            val pairs = sameColumn.chunked(2).map { Pair(it[0], it[1]) }
+            val res = mutableListOf<Point2>()
+            pairs.forEach { pair ->
+                for (k in pair.first.column..pair.second.column) {
+                    res.add(Point2(p.row, k))
+                }
+            }
+            res
+        }.flatten().toSet()
+        printGridMapToFile(grid)
 
         // This is the perimeter of the filled area
-        fillHorizontal.flatten().forEach { p -> grid[p] = true }
-        fillVertical.flatten().forEach { p -> grid[p] = true }
+        fillHorizontal.forEach { p -> grid[p] = true }
+        fillVertical.forEach { p -> grid[p] = true }
+        printGridMapToFile(grid)
+        //val compressedGrid = compressGrid(grid)
+        //printGridMapToFile(grid)
 
         // Create area masks for each pair of points
-        var res = 0
+        var res = 0L
         println("tocheck: ${points.size * points.size}")
-        areas.forEach { area ->
+        areas.forEachIndexed { i, area ->
             val start = System.nanoTime()
-            println("Checking points $area.topLeft x $area.bottomRight")
-            System.gc()
-
+            println("$i: Checking points ${area.topLeft} x ${area.bottomRight} with area ${area.area}")
 
             val perimMask = mutableMapOf<Point2, Boolean>()
             val startingX = Math.min(area.topLeft.row, area.bottomRight.row)
@@ -189,67 +116,73 @@ class Day9(isTest: Boolean) : Day(isTest) {
             val dx = Math.abs(area.bottomRight.row - area.topLeft.row)
             val dy = Math.abs(area.bottomRight.column - area.topLeft.column)
 
-            // If dx takes you outside of the perimeter, skip this
-            val endPoint1 = Point2(startingY + dy, startingX)
-            val endPoint2 = Point2(startingY, startingX + dx)
-            if (!checkPointHitsEdgeInEveryDirection(grid, endPoint1)) return@forEach
-            if (!checkPointHitsEdgeInEveryDirection(grid, endPoint2)) return@forEach
-            val c1 = System.nanoTime()
-            println("Checked edge points in ${(c1 - start) / 1_000_000}ms")
             // Make rectangle
             // top
             val perimMaskList = mutableListOf<Point2>()
             for (i in startingX..startingX + dx) {
-                perimMaskList.add(Point2(startingY, i))
+                perimMaskList.add(Point2(i, startingY))
             }
             // bottom
             for (i in startingX..startingX + dx) {
-                perimMaskList.add(Point2(startingY + dy, i))
+                perimMaskList.add(Point2(i, startingY + dy))
             }
             // left
             for (i in startingY..startingY + dy) {
-                perimMaskList.add(Point2(i, startingX))
+                perimMaskList.add(Point2(startingX, i))
             }
             // right
             for (i in startingY..startingY + dy) {
-                perimMaskList.add(Point2(i, startingX + dx))
+                perimMaskList.add(Point2(startingX + dx, i))
             }
             val c2 = System.nanoTime()
-            println("Created perimeter in ${(c2 - c1) / 1_000_000}ms")
-            perimMaskList.forEach { p -> perimMask[p] = true }
+            println("Created perimeter in ${(start - c2) / 1_000_000}ms")
+            perimMaskList.distinct().forEach { p -> perimMask[p] = true }
             val c3 = System.nanoTime()
             println("Created perimeter map in ${(c3 - c2) / 1_000_000}ms")
 
-            val pointsToCheck = perimMask.keys.filter { p -> !grid.contains(p) }.distinctBy { it.row }.distinctBy { it.column }
-            val invalid = pointsToCheck.any { p -> checkPointHitsEdgeInEveryDirection(grid, p) == false }
+            val pointsToCheck = perimMask.keys.filter { p -> !grid.contains(p) }
+            val a = pointsToCheck.distinctBy { it.row }
+            val b = pointsToCheck.distinctBy { it.column }
+            val amax = a.maxByOrNull { it.row }
+            val amin = a.minByOrNull { it.row }
+            val bmax = b.maxByOrNull { it.column }
+            val bmin = b.minByOrNull { it.column }
+            val cornerChecks = setOfNotNull(amin, amax, bmin, bmax)
+            val invalid = cornerChecks.any { p -> checkPointHitsEdgeInEveryDirection(grid, p) == false }
             val c4 = System.nanoTime()
             println("Checked validity in ${(c4 - c3) / 1_000_000}ms")
 
             if(!invalid) {
-                val area = (dx + 1) * (dy + 1)
-                if (area > res) {
-                    res = area
+                println("VALID AREA FOUND: ${area.topLeft}, ${area.bottomRight} with area ${area.area}")
+                val newArea = area.area
+                if (newArea > res) {
+                    res = newArea
+                    println("CURRENTRES: $res via ${area.topLeft}, ${area.bottomRight}")
                 }
             }
             val end = System.nanoTime()
             println("Checked point in ${(end - start) / 1_000_000}ms")
-            println("CURRENTRES: $res")
         }
         println("FINALRES: $res")
     }
 
     fun checkPointHitsEdgeInEveryDirection(grid: Map<Point2, Boolean>, p: Point2): Boolean {
-        val sameColumn = grid.keys.filter { it.column == p.column }.sortedBy { it.row }
-        val minColumn = sameColumn.minBy { it.row }
-        val maxColumn = sameColumn.maxBy { it.row }
+        // Column check
+        val sameX = grid.keys.filter { it.row == p.row }.sortedBy { it.column }
+        if (sameX.isEmpty()) return false
+        val minY = sameX.minBy { it.column }
+        val maxY = sameX.maxBy { it.column }
+        val inBoundsRow = minY.column <= p.column && p.column <= maxY.column
+        if (!inBoundsRow) return false
+
+        // Row check
+        val sameY = grid.keys.filter { it.column == p.column }.sortedBy { it.row }
+        if (sameY.isEmpty()) return false
+        val minColumn = sameY.minBy { it.row }
+        val maxColumn = sameY.maxBy { it.row }
         val inBoundsColumn = minColumn.row <= p.row && p.row <= maxColumn.row
         if (!inBoundsColumn) return false
 
-        val sameRow = grid.keys.filter { it.row == p.row }.sortedBy { it.column }
-        val minRow = sameRow.minBy { it.column }
-        val maxRow = sameRow.maxBy { it.column }
-        val inBoundsRow = minRow.column <= p.column && p.column <= maxRow.column
-        if (!inBoundsRow) return false
         return true
     }
 
@@ -276,15 +209,35 @@ class Day9(isTest: Boolean) : Day(isTest) {
     }
 
     fun printGridMap(map: Map<Point2, Boolean>) {
-        val rowSize = map.keys.maxOf { it.row } + 1
-        val columnSize = map.keys.maxOf { it.column } + 1
+        val rowSize = map.keys.maxOf { it.row } + 10
+        val columnSize = map.keys.maxOf { it.column } + 10
 
         for (i in 0..rowSize - 1) {
             for (j in 0..columnSize - 1) {
-                val p = Point2(i, j)
+                val p = Point2(j, i)
                 print(if (map.containsKey(p) && map[p] == true) "#" else ".")
             }
             println()
+        }
+    }
+
+    fun printGridMapToFile(map: Map<Point2, Boolean>) {
+        val rowSize = 30
+        val columnSize = 30
+
+        val lines = mutableListOf<String>()
+        for (i in 0..rowSize - 1) {
+            val lineBuilder = StringBuilder()
+            for (j in 0..columnSize - 1) {
+                val p = Point2(j, i)
+                lineBuilder.append(if (map.containsKey(p) && map[p] == true) "#" else ".")
+            }
+            lines.add(lineBuilder.toString())
+        }
+        File("gridoutput.txt").printWriter().use { out ->
+            lines.forEach {
+                out.println(it)
+            }
         }
     }
 
