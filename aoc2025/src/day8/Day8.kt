@@ -20,7 +20,7 @@ class Day8(isTest: Boolean) : Day(isTest) {
         return Math.sqrt(sum)
     }
 
-    fun dfs(start: Coord, graph: Map<Coord, List<Coord>>): DfsResult {
+    fun dfs(start: Coord, graph: Map<Coord, Set<Coord>>): DfsResult {
         val visited = mutableListOf<Coord>()
         val toVisit = mutableListOf<Coord>()
         toVisit.add(start)
@@ -38,20 +38,26 @@ class Day8(isTest: Boolean) : Day(isTest) {
         return DfsResult(visited.toList())
     }
 
+    // 1320 too low
+    // 133574 correct - this puzzle was awfully worded i did not understand it
     fun part1() {
         val input = Helper2025.readAsLines(inputFile)
         val coords = input.map { it.split(",").map { it.toLong() } }.map { Coord(it.get(0), it.get(1), it.get(2)) }
-        val circuitGraph = mutableMapOf<Coord, List<Coord>>()
+        val circuitGraph = mutableMapOf<Coord, Set<Coord>>()
 
+        // Every coord is a node in the graph
+        coords.forEach { coords -> circuitGraph[coords] = setOf() }
+
+        // Shortest coord
         val shortest = shortestDistances(coords).map { it.sorted() }.distinct()
-        shortest.forEach {
-            if (circuitGraph.contains(it.to)) return@forEach
-            circuitGraph.merge(it.from, listOf(it.to)) { a, b -> a + b }
-            circuitGraph.merge(it.to, listOf(it.from)) { a, b -> a + b }
-            println()
+
+        shortest.take(coords.size).forEach {
+            circuitGraph.merge(it.from, setOf(it.to)) { a, b -> a + b }
+            circuitGraph.merge(it.to, setOf(it.from)) { a, b -> a + b }
         }
 
-        val res = circuitGraph.map { it -> dfs(it.key, circuitGraph) }
+        val res = circuitGraph.map { it -> dfs(it.key, circuitGraph) }.map { it.visited.toSet() }.distinct()
+        val sum = res.sortedByDescending { it.size }.take(3).map { it.size }.reduce { acc, it -> acc * it }
         println()
     }
 
