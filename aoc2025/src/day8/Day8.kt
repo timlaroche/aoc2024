@@ -58,7 +58,7 @@ class Day8(isTest: Boolean) : Day(isTest) {
 
         val res = circuitGraph.map { it -> dfs(it.key, circuitGraph) }.map { it.visited.toSet() }.distinct()
         val sum = res.sortedByDescending { it.size }.take(3).map { it.size }.reduce { acc, it -> acc * it }
-        println()
+        println(sum)
     }
 
     fun shortestDistances(coords: List<Coord>): List<Connection> {
@@ -73,6 +73,26 @@ class Day8(isTest: Boolean) : Day(isTest) {
     }
 
     fun part2() {
+        val input = Helper2025.readAsLines(inputFile)
+        val coords = input.map { it.split(",").map { it.toLong() } }.map { Coord(it.get(0), it.get(1), it.get(2)) }
+        val circuitGraph = mutableMapOf<Coord, Set<Coord>>()
 
+        // Every coord is a node in the graph
+        coords.forEach { coords -> circuitGraph[coords] = setOf() }
+
+        // Shortest coord
+        val shortest = shortestDistances(coords).map { it.sorted() }.distinct()
+
+        shortest.forEach {
+            circuitGraph.merge(it.from, setOf(it.to)) { a, b -> a + b }
+            circuitGraph.merge(it.to, setOf(it.from)) { a, b -> a + b }
+            val res = circuitGraph.map { it -> dfs(it.key, circuitGraph) }.map { it.visited.toSet() }.distinct()
+            val biggestCircuit = res.sortedByDescending { it.size }.take(1)
+            if (biggestCircuit.get(0).size == coords.size) {
+                println("${it.to.x * it.from.x}")
+                return
+            }
+        }
+        println()
     }
 }
