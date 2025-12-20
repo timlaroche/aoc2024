@@ -4,6 +4,7 @@ import Day
 import java.io.File
 import java.util.function.BinaryOperator
 import java.util.function.Predicate
+import kotlin.math.PI
 
 class Day6(isTest: Boolean) : Day(isTest) {
     data class ProblemInput(val inputs: List<String>)
@@ -43,8 +44,45 @@ class Day6(isTest: Boolean) : Day(isTest) {
         println(res)
     }
 
-    // 2709223691871346 -- too highg
+    // 2709223691871346 -- too high
     fun part2() {
-        // TODO just read the grid upwards
+        val input = Helper2025.readAsCharGrid(inputFile)
+        // Make all rows the same length to avoid any out of bounds index
+        val maxRowSize = input.maxBy { it.size }.size
+        input.forEach {
+            while (it.size < maxRowSize) {
+                it.add(' ')
+            }
+        }
+
+        // Read from the bottom up
+        val problems = mutableListOf<Problem>()
+        var problem = Problem("", listOf())
+        for (i in maxRowSize - 1 downTo 0) {
+            val numString = StringBuilder()
+            input.forEach { row ->
+                numString.append(row[i])
+            }
+            // If the string has a symbol - grab it and reset the current problem
+            if (numString.contains("*") || numString.contains("+")) {
+                val operator = if (numString.contains("*")) "*" else "+"
+                problems.add(problem.copy(operator, problem.inputs + listOf(numString.split(operator)[0].trim().toLong())))
+                problem = Problem("", listOf())
+            }
+            // Otherwise, keep building up the problem
+            else if (numString.trim().isNotEmpty()) {
+                problem = problem.copy(problem.operator, problem.inputs + listOf(numString.toString().trim().toLong()))
+            }
+        }
+
+        val res = problems.sumOf { problem ->
+            val operationFunction: (Long, Long) -> Long = when (problem.operator) {
+                "+" -> { a, b -> a + b }
+                "*" -> { a, b -> a * b }
+                else -> throw Exception("Unknown operator")
+            }
+            problem.inputs.reduce { acc, i -> operationFunction(acc, i) }
+        }
+        println(res)
     }
 }
